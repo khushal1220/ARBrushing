@@ -23,6 +23,7 @@ public class ARTrackingManager : MonoBehaviour
     Dictionary<TrackableId, Dictionary<ARCoreFaceRegion, GameObject>> m_InstantiatedPrefabs;
 #endif
 
+    Dictionary<int,Transform> m_TrackedObjects = new Dictionary<int, Transform>();
     // Start is called before the first frame update
     void Start()
     {
@@ -40,11 +41,12 @@ public class ARTrackingManager : MonoBehaviour
 
     void handleFace()
     {
+        syncTrackedObjects();
 #if UNITY_ANDROID
+        return;
         var subsystem = (ARCoreFaceSubsystem)faceManager.subsystem;
         if (subsystem == null)
             return;
-        Debug.Log($"traceables {faceManager.trackables.count}");
         foreach (var face in faceManager.trackables)
         {
             Dictionary<ARCoreFaceRegion, GameObject> regionGos;
@@ -72,7 +74,28 @@ public class ARTrackingManager : MonoBehaviour
         }
 #endif
     }
-
+    void syncTrackedObjects()
+    {
+        foreach (var tObject in m_TrackedObjects)
+        {
+            if (FaceManager.instances.Count == 0) return;
+            if (FaceManager.instances[0] == null) return;
+            //FaceManager faceManager = FaceManager.instances[Random.Range(0, FaceManager.instances.Count-1)];
+            FaceManager faceManager = FaceManager.instances[0];
+            MeshFilter meshFilter = faceManager.GetComponent<MeshFilter>();
+            Mesh mesh = meshFilter.sharedMesh;
+            if(mesh.vertices.Length <= tObject.Key) continue;
+            Vector3 landmark = faceManager.transform.TransformPoint(mesh.vertices[tObject.Key]);
+            tObject.Value.position = landmark;
+            tObject.Value.parent = faceManager.transform;
+        }
+    }
+    public bool mapObjectWithLandmark(Transform element, int Landmark)
+    {
+        if(m_TrackedObjects.ContainsKey(Landmark))return false;
+        m_TrackedObjects.Add(Landmark,element);
+        return true;
+    }
     void OnDestroy()
     {
 #if UNITY_ANDROID

@@ -9,9 +9,16 @@ EditorBuildSettings:
     path: Assets/Scenes/Playground.unity
     guid: e2b41a1812e58455db2942daba7c1b35
   - enabled: 1
+    path: Assets/Scenes/HandTrack.unity
+    guid: 00b8bf339ee9db543a6ebd8c602aa0b5
+  - enabled: 1
     path: Assets/MediaPipeUnity/Samples/Scenes/Face Landmark Detection/Face Landmark
       Detection.unity
     guid: df0fc3b9f7146dee593f8b5660ae773c
+  - enabled: 1
+    path: Assets/MediaPipeUnity/Samples/Scenes/Hand Landmark Detection/Hand Landmark
+      Detection.unity
+    guid: 98d49dcfe667ea822a91d6b74f7cb2e9
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af,
       type: 2}
