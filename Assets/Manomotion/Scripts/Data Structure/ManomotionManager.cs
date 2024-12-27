@@ -337,6 +337,8 @@ public class ManomotionManager : ManomotionBase
         visualization_info.occlussion_rgb = new Texture2D(_width, _height);
         MRframePixelColors = new Color32[_width * height];
         SetMRFrameArray(MRframePixelColors);
+
+
     }
 
     /// <summary>
