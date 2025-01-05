@@ -150,3 +150,4 @@ MonoBehaviour:
   dirtParticles:
   - {fileID: 1921846756276830927, guid: cf8b88c4dbf9a449787510ddccf128cc, type: 3}
   - {fileID: 1921846756276830927, guid: cf8b88c4dbf9a449787510ddccf128cc, type: 3}
+  brushTag: brush

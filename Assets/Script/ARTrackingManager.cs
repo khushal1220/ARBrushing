@@ -136,6 +136,7 @@ public class ARTrackingManager : MonoBehaviour
         Vector3 landmarkPos = faceManager.transform.TransformPoint(vertex);
 
         // Update tracked object's position and parent
+        //Debug.Log(landmarkPos);
         m_Object.position = landmarkPos;
         m_Object.parent = faceManager.transform;
         m_Object.rotation = Quaternion.identity;

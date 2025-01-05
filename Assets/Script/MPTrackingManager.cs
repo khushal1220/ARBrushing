@@ -92,7 +92,7 @@ public class MPTrackingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        handleFace();
+        //handleFace();
         handleHand();
     }
 
@@ -129,19 +129,22 @@ public class MPTrackingManager : MonoBehaviour
             Vector3 thumbBasePosition = GetHandLandmark(1).position;
             float distance = Vector3.Distance(wristPosition, indexTipPosition);
 
-            float scaleFactor = handScaleFactor * distance;
+            //float scaleFactor = handScaleFactor * distance;
+            float scaleFactor = .002f;
 
-            hand.GetChild(0).localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-
-            hand.position = (wristPosition + indexTipPosition) / 2;
+            hand.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+            Vector3 pos = (wristPosition + indexTipPosition) / 2;
+            pos *= .001f;
+            pos.z = .1f;
+            Debug.Log(pos);
+            hand.position = pos;
 
             Vector3 wristToThumbBase = thumbBasePosition - wristPosition;
 
             float zRotation = Mathf.Atan2(wristToThumbBase.y, wristToThumbBase.x) * Mathf.Rad2Deg;
 
             //hand.GetChild(0).rotation = Quaternion.Euler(0, 0, zRotation);
-            hand.GetChild(0).rotation = Quaternion.Slerp(hand.GetChild(0).rotation, Quaternion.Euler(0, 0, zRotation), Time.deltaTime * brushRotationSpeed);
-
+            //hand.GetChild(0).rotation = Quaternion.Slerp(hand.GetChild(0).rotation, Quaternion.Euler(0, 0, zRotation), Time.deltaTime * brushRotationSpeed);
         }
     }
 

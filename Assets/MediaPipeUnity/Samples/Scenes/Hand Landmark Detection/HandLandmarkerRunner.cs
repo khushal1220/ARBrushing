@@ -51,7 +51,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             taskApi = HandLandmarker.CreateFromOptions(options, GpuManager.GpuResources);
             var imageSource = ImageSourceProvider.ImageSource;
             this.imageSource = imageSource;
-            Debug.Log("ImageSource Set");
+            //Debug.Log("ImageSource Set");
             yield return imageSource.Play();
 
             //if (!imageSource.isPrepared)
@@ -65,7 +65,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
             _textureFramePool = new Experimental.TextureFramePool(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, 10);
 
             // NOTE: The screen will be resized later, keeping the aspect ratio.
-            Debug.Log("Initialising Screen");
+            //Debug.Log("Initialising Screen");
 
             screen.Initialize(imageSource);
 
@@ -90,7 +90,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
             while (true)
             {
-                Debug.Log("Starting");
+                //Debug.Log("Starting");
                 //yield return new WaitForSeconds(.03f);
                 //if (isPaused)
                 //{
@@ -113,7 +113,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
                 //}
 
                 //Debug.Log("<color=pink>Detected AR Camera Background</color>");
-                Debug.Log("Preparing image");
+                //Debug.Log("Preparing image");
 
                 // Build the input Image
                 Image image;
@@ -137,7 +137,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
                     image = textureFrame.BuildCPUImage();
                     textureFrame.Release();
                 }
-                Debug.Log("image prepared");
+                //Debug.Log("image prepared");
 
                 switch (taskApi.runningMode)
                 {
@@ -165,7 +165,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
                         taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
                         break;
                 }
-                Debug.Log("Task done");
+                //Debug.Log("Task done");
 
             }
         }

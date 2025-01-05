@@ -10,6 +10,7 @@ public class FaceManager : MonoBehaviour
     public static List<FaceManager> instances = new List<FaceManager>();
     public String sceneName = "HandTracking";
     public Transform[] dirtParticles;
+    public string brushTag;
 
     Transform[] currDirt;
 
@@ -62,12 +63,22 @@ public class FaceManager : MonoBehaviour
             if (faceObject.Value == null)
             {
 
-                this.faceObjects.Remove(faceObject.Key);
+                //this.faceObjects.Remove(faceObject.Key);
                 continue;
             }
+            if (!faceObject.Value.gameObject.activeSelf) continue;
             ARTrackingManager.get.SyncFaceObject(faceObject.Value, faceObject.Key);
-            //Vector3 lcoalVertexPos = transform.TransformPoint(GetComponent<MeshFilter>().mesh.vertices[faceObject.Key]);
-            //faceObject.Value.GetComponent<MeshRenderer>().material.SetFloat("Face Mesh Depth", Camera.main.transform.TransformPoint(lcoalVertexPos).z);
+            Vector3 directionToCamera = Camera.main.transform.position - faceObject.Value.position;
+            Ray ray = new Ray(faceObject.Value.position, directionToCamera);
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                // Check if the obstructing object has the "Brush" tag
+                if (hit.collider.CompareTag(brushTag))
+                {
+                    faceObject.Value.gameObject.SetActive(false);
+                }
+            }
         }
     }
     void placeDirt()

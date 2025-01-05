@@ -266,7 +266,7 @@ namespace Mediapipe.Unity
             if (!arCameraBackground) return null;
             int textureWidth = this.textureWidth;
             int textureHeight = this.textureHeight;
-            Debug.Log($"{textureWidth}X{textureHeight}");
+            //Debug.Log($"{textureWidth}X{textureHeight}");
             // Reuse existing textures if they are not null
             if (resizedTexture == null || resizedTexture.width != textureWidth || resizedTexture.height != textureHeight)
             {

@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Global Resource
+  - baseSDK
+  - particle
+  - brush
   layers:
   - Default
   - TransparentFX
