@@ -66,7 +66,6 @@ public class ARTrackingManager : MonoBehaviour
     void handleFace()
     {
         syncTrackedObjects();
-
     }
     void syncTrackedObjects()
     {

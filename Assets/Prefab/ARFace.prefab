@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3842544854372372297}
   - component: {fileID: 6899456361931589106}
   - component: {fileID: -407383133032895472}
+  - component: {fileID: 6440970824516767387}
   m_Layer: 0
   m_Name: ARFace
   m_TagString: Untagged
@@ -141,7 +142,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5239599436700287932}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9988e3459e506c244a8b30b8a59bb7f9, type: 3}
   m_Name: 
@@ -151,3 +152,28 @@ MonoBehaviour:
   - {fileID: 1921846756276830927, guid: cf8b88c4dbf9a449787510ddccf128cc, type: 3}
   - {fileID: 1921846756276830927, guid: cf8b88c4dbf9a449787510ddccf128cc, type: 3}
   brushTag: brush
+  brush: {fileID: 0}
+  brushRadius: 20
+  brushColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &6440970824516767387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5239599436700287932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57644a19085c440bda05c0b4c918a3f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cubeA: {fileID: 0}
+  cubePrefab: {fileID: 2265358618371585036, guid: 30573cc141cce451dbdfdc355ae5d41d,
+    type: 3}
+  lineRenderers:
+  - {fileID: 0}
+  - {fileID: 0}
+  brush: {fileID: 0}
+  brushRadius: 20
+  brushColor: {r: 1, g: 0, b: 0, a: 1}
+  faceMaterial: {fileID: 2100000, guid: 3f3aeb2a3864746ea98879c67b6ec8d6, type: 2}
