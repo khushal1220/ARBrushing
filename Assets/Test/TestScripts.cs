@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
 
 public class TestScripts : MonoBehaviour
@@ -17,11 +18,16 @@ public class TestScripts : MonoBehaviour
 
     private Texture2D faceTexture;
     public Material faceMaterial;
+    public MeshRenderer lipstickMesh;
     Mesh faceMesh;
 
     bool isSetUp = false;
+    Transform index;
+    MPTrackingManager mpManager;
     void Start()
     {
+        mpManager = MPTrackingManager.get;
+        lipstickMesh = mpManager.LipStickMeshRendrer;
         //Transform c = cubeA;
         //int i = 0;
         //cubes.Add(c);
@@ -36,15 +42,108 @@ public class TestScripts : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0) && GetComponent<MeshFilter>())
-        {
-            Brush();
-        }
+        //if (Input.GetMouseButton(0) && GetComponent<MeshFilter>())
+        //{
+        //    CheckBrush();
+        //}
+        CheckBrush();
+
+    }
+    Transform GetHandLandmark(int landmark)
+    {
+        return mpManager.GetHandLandmark(landmark);
     }
 
+    float ratioPalm;
+    float maxPalm = 0;
+
+    void CheckBrush()
+    {
+        //if (GetHandLandmark(8))
+        Color color = new Color(1, 1, 1, 1);
+
+        if (GetHandLandmark(8))
+        {
+            Vector3 pos = (GetHandLandmark(5).position + GetHandLandmark(9).position + GetHandLandmark(13).position + GetHandLandmark(17).position) / 4;
+            Vector3 wristPos = GetHandLandmark(0).position;
+
+            bool indexRaised = IsFingerRaised(8, 5);
+            bool middleRaised = IsFingerRaised(12, 9);
+            if (indexRaised && middleRaised)
+            {
+                //Debug.LogError("Both index and middle fingers are raised!");
+                //lipstickMesh.material.SetColor("_BaseColor", new Color(255, 255, 255, 255));
+
+                color.a = .3f;
+                lipstickMesh.material.color = color;
+            }
+            else
+            {
+                //lipstickMesh.material.SetColor("_BaseColor", new Color(255, 255, 255, 90));
+                lipstickMesh.material.color = color;
+                Brush();
+                //Debug.LogError("Down");
+            }
+        }
+        else
+        {
+            color.a = .3f;
+            lipstickMesh.material.color = color;
+        }
+
+        return;
+        if (mpManager.isActive())
+        {
+            Transform index = mpManager.GetHandLandmark(8);
+            Transform indexBase = mpManager.GetHandLandmark(5);
+            Transform thumb = mpManager.GetHandLandmark(4);
+            Transform wrist = mpManager.GetHandLandmark(0);
+            float palmDistace = Vector2.Distance(mpManager.GetHandLandmark(1).position, mpManager.GetHandLandmark(17).position);
+            if (maxPalm < palmDistace)
+            {
+                maxPalm = palmDistace;
+            }
+
+            ratioPalm = palmDistace / maxPalm;
+            Vector3 pos = (mpManager.GetHandLandmark(5).position + mpManager.GetHandLandmark(9).position + mpManager.GetHandLandmark(13).position + mpManager.GetHandLandmark(17).position) / 4;
+            float distanceAverageToIndex = Vector2.Distance(pos, indexBase.position);
+            float distanceAverageToThumb = Vector2.Distance(pos, thumb.position);
+            //Debug.LogError(distanceAverageToIndex > distanceAverageToThumb && ratioPalm > .5f);
+            if (distanceAverageToIndex > distanceAverageToThumb && ratioPalm > .5f)
+            {
+                Debug.Log("true");
+                Brush();
+            }
+            else
+            {
+                Debug.Log("false");
+            }
+        }
+        else
+        {
+            Debug.Log($"Landmark is null {mpManager.isActive()}");
+        }
+    }
+    private bool IsFingerRaised(int tipIndex, int mcpIndex)
+    {
+        Vector3 tip = GetHandLandmark(tipIndex).position;
+        Vector3 mcp = GetHandLandmark(mcpIndex).position;
+        Vector3 wrist = GetHandLandmark(0).position;
+
+        // Calculate distances
+        float tipToWristDistance = Vector3.Distance(tip, wrist);
+        float mcpToWristDistance = Vector3.Distance(mcp, wrist);
+
+        // A finger is raised if the tip is significantly further from the wrist compared to its base
+        return tipToWristDistance > mcpToWristDistance * 1.5f; // Adjust multiplier for sensitivity
+    }
     void Brush()
     {
         if (!isSetUp) SetupFaceCanvas();
+        if (index == null)
+        {
+            index = GetHandLandmark(8);
+        }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -58,7 +157,8 @@ public class TestScripts : MonoBehaviour
         //    }
         //}
 
-        if (Physics.Raycast(ray, out hit))
+        // if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(Camera.main.transform.position, index.position - Camera.main.transform.position, out hit))
         {
             // Get the material of the hit object.
             Debug.Log("Enter RayCast");
@@ -147,54 +247,6 @@ public class TestScripts : MonoBehaviour
         mesh.uv = uvs;
     }
 
-    void SetupUVs()
-    {
-        faceMesh = GetComponent<MeshFilter>().mesh;
-        Vector3[] vertices = faceMesh.vertices;
-        Vector2[] uvs = new Vector2[vertices.Length];
-
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            // Map vertex local positions to UV coordinates (normalized between 0 and 1)
-            uvs[i] = new Vector2(vertices[i].x + 0.5f, vertices[i].y + 0.5f);
-        }
-
-        faceMesh.uv = uvs; // Assign the UVs to the mesh
-    }
-    void SetupUVs1()
-    {
-        MeshFilter meshFilter = GetComponent<MeshFilter>();
-
-        if (meshFilter == null || meshFilter.mesh == null)
-        {
-            Debug.LogError("MeshFilter or Mesh not found on the object!");
-            return;
-        }
-
-        Mesh mesh = meshFilter.mesh;
-
-        // Generate UVs if they are not already set
-        if (mesh.uv == null || mesh.uv.Length != mesh.vertexCount)
-        {
-            Debug.LogWarning("UVs not found or incomplete on the mesh. Generating default UVs.");
-            Vector3[] vertices = mesh.vertices;
-            Vector2[] uvs = new Vector2[vertices.Length];
-
-            // Map UVs based on bounding box projection
-            Bounds bounds = mesh.bounds;
-
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                Vector3 vertex = vertices[i];
-                uvs[i] = new Vector2(
-                    (vertex.x - bounds.min.x) / bounds.size.x,
-                    (vertex.y - bounds.min.y) / bounds.size.y
-                );
-            }
-
-            mesh.uv = uvs;
-        }
-    }
     void SetColor(int pixelX, int pixelY, Color color)
     {
         Color currentColor = faceTexture.GetPixel(pixelX, pixelY);

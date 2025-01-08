@@ -6,6 +6,8 @@ using UnityEngine;
 //this is an class for the Mideapipe related tracking
 public class MPTrackingManager : MonoBehaviour
 {
+    public static MPTrackingManager get;
+
     public Transform FaceLandmarkParent;
     public Transform HandLandmarkParent;
 
@@ -18,6 +20,9 @@ public class MPTrackingManager : MonoBehaviour
     public float faceScaleFactor;
     public float handScaleFactor;
 
+    public Transform LipStick;
+    public MeshRenderer LipStickMeshRendrer;
+
     Dictionary<int, Transform> faceLandmarks = new Dictionary<int, Transform>();
     Dictionary<int, Transform> handLandmarks = new Dictionary<int, Transform>();
 
@@ -29,7 +34,10 @@ public class MPTrackingManager : MonoBehaviour
 
     float faceInitScaleFactor;
     float handInitScaleFactor;
-
+    private void Awake()
+    {
+        get = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -124,6 +132,13 @@ public class MPTrackingManager : MonoBehaviour
         else
         {
             if (GetHandLandmark(20) == null) return;
+            Transform indexMid = GetHandLandmark(7);
+            Transform indexTip = GetHandLandmark(8);
+            Vector3 lipStickPos = indexMid.position * .001f;
+            lipStickPos.z = .1f;
+            LipStick.position = lipStickPos;
+            LipStick.rotation = Quaternion.LookRotation(indexTip.position - indexMid.position, Vector3.up);
+            return;
             Vector3 wristPosition = GetHandLandmark(0).position;
             Vector3 indexTipPosition = GetHandLandmark(9).position;
             Vector3 thumbBasePosition = GetHandLandmark(1).position;
@@ -148,4 +163,8 @@ public class MPTrackingManager : MonoBehaviour
         }
     }
 
+    public bool isActive()
+    {
+        return HandLandmarkParent.gameObject.activeSelf && HandLandmarkParent.childCount > 0;
+    }
 }
